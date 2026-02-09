@@ -6,75 +6,71 @@ st.set_page_config(
     layout="wide"
 )
 
-# ---------- DATA STRUCTURE ----------
-NAV = {
-    "Cross-border": {
-        "Collection": [
-            "Overview", "Flow", "Sandbox",
-            "API Reference", "Webhook", "Security", "Error Codes"
-        ],
-        "Disbursement": [
-            "Overview", "Flow", "Sandbox",
-            "API Reference", "Webhook", "Security", "Error Codes"
-        ]
-    },
-    "B2B": {
-        "VA": [
-            "Overview", "Use case", "Integrate Methods",
-            "Sandbox", "API Reference", "Webhook", "Error Codes"
-        ],
-        "BNPL": ["Overview", "API Reference"],
-        "Installment": ["Overview", "API Reference"],
-        "Card Payment": ["Overview", "API Reference"]
-    },
-    "Bill": {
-        "Bill Payment": ["Overview", "API Reference"],
-        "Insurance": ["Overview", "API Reference"]
-    },
-    "Leadgen": {
-        "Overview": ["Overview"]
-    }
-}
-
-# ---------- SIDEBAR ----------
+# ---------- SIDEBAR (LEFT) ----------
 st.sidebar.title("📘 Dev Portal")
 
 product = st.sidebar.selectbox(
     "Product",
-    list(NAV.keys())
+    ["Cross-border", "B2B", "Bill", "Leadgen"]
 )
+
+module_map = {
+    "Cross-border": ["Collection", "Disbursement"],
+    "B2B": ["VA", "BNPL", "Installment", "Card Payment"],
+    "Bill": ["Bill Payment", "Insurance"],
+    "Leadgen": ["Overview"]
+}
 
 module = st.sidebar.selectbox(
     "Module",
-    list(NAV[product].keys())
+    module_map[product]
 )
 
-section = st.sidebar.radio(
-    "Documentation",
-    NAV[product][module]
-)
-
-# ---------- MAIN CONTENT ----------
+# ---------- MAIN HEADER ----------
 st.markdown(f"### {product}")
 st.title(module)
-st.caption(section)
 
 st.divider()
 
-# ---------- CONTENT RENDER ----------
-if section == "Overview":
-    st.markdown("""
-    Welcome to the **Overview** section.
+# ---------- SUB TABS (RIGHT / TOP) ----------
+tabs = st.tabs([
+    "Overview",
+    "Flow",
+    "Sandbox",
+    "API Reference",
+    "Webhook",
+    "Security",
+    "Error Codes"
+])
 
-    Đây là nội dung demo cho module này.
-    Có thể mô tả mục đích, phạm vi, và cách sử dụng tổng quan.
+# ---------- TAB CONTENT ----------
+with tabs[0]:
+    st.subheader("Overview")
+    st.markdown("""
+    Đây là phần mô tả tổng quan module.
+
+    Nội dung demo – sẽ cập nhật sau.
     """)
 
-elif section == "API Reference":
+with tabs[1]:
+    st.subheader("Flow")
+    st.info("Flow diagram sẽ được thêm sau.")
+
+with tabs[2]:
+    st.subheader("Sandbox")
+    st.markdown("""
+    Base URL (Sandbox):
+
+    ```
+    https://sandbox.api.company.com
+    ```
+    """)
+
+with tabs[3]:
     st.subheader("POST /api/v1/example")
 
     st.markdown("**Description**")
-    st.write("This API endpoint is used for demonstration purposes.")
+    st.write("API dùng cho mục đích demo.")
 
     st.markdown("**Headers**")
     st.code("""
@@ -99,5 +95,21 @@ Content-Type: application/json
         }
     })
 
-else:
-    st.info("Content will be updated later.")
+with tabs[4]:
+    st.subheader("Webhook")
+    st.info("Webhook documentation placeholder.")
+
+with tabs[5]:
+    st.subheader("Security")
+    st.markdown("Authentication, signature, IP whitelist...")
+
+with tabs[6]:
+    st.subheader("Error Codes")
+    st.table(pd.DataFrame({
+        "Code": ["400", "401", "500"],
+        "Description": [
+            "Bad Request",
+            "Unauthorized",
+            "Internal Server Error"
+        ]
+    }))
