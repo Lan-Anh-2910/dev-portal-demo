@@ -1,6 +1,40 @@
 import streamlit as st
 import pandas as pd
 
+st.markdown("""
+<style>
+/* Sidebar menu item */
+.nav-item {
+    padding: 8px 12px;
+    margin-left: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #555;
+    font-size: 15px;
+}
+
+.nav-item:hover {
+    background-color: #f5f5f5;
+    color: #000;
+}
+
+/* Active item */
+.nav-item.active {
+    background-color: #fde7f3;
+    color: #d63384;
+    font-weight: 600;
+}
+
+/* Product title */
+.nav-title {
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #333;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 
 # ---------- SECTION TEMPLATES ----------
@@ -67,10 +101,13 @@ left, center, right = st.columns([1.9, 4.2, 1.9])
 
 # ---------- LEFT: PRODUCT + SUBPRODUCT ----------
 with left:
-    st.markdown("### Products")
+    st.markdown("### Overview")
 
     for product, subs in NAV.items():
-        st.markdown(f"**{product}**")
+        st.markdown(
+            f"<div class='nav-title'>{product}</div>",
+            unsafe_allow_html=True
+        )
 
         for sp in subs.keys():
             is_active = (
@@ -78,18 +115,26 @@ with left:
                 and st.session_state.subproduct == sp
             )
 
+            css_class = "nav-item active" if is_active else "nav-item"
+
+            if st.markdown(
+                f"<div class='{css_class}'>{sp}</div>",
+                unsafe_allow_html=True
+            ):
+                pass
+
+            # Invisible click handler
             if st.button(
-                sp,
-                key=f"{product}_{sp}",
-                use_container_width=True,
-                type="primary" if is_active else "secondary"
+                f"_click_{product}_{sp}",
+                key=f"click_{product}_{sp}",
+                help=sp,
+                use_container_width=True
             ):
                 st.session_state.product = product
                 st.session_state.subproduct = sp
                 st.session_state.section = NAV[product][sp][0]
                 st.rerun()
 
-        st.markdown("---")
 
 # ---------- RIGHT: SECTIONS ----------
 with right:
