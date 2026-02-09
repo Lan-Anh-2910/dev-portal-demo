@@ -1,57 +1,51 @@
 import streamlit as st
 
-st.set_page_config(page_title="B2B - Virtual Account", layout="wide")
+st.set_page_config(page_title="B2B - VA", layout="wide")
 
-# ===== Breadcrumb =====
-st.markdown("**B2B > Virtual Account**")
+# ===== LAYOUT: LEFT | CENTER | RIGHT =====
+left, center, right = st.columns([1.3, 4.5, 1.2])
 
-st.title("Virtual Account (VA)")
+# ===== LEFT: PRODUCT / SUBPRODUCT =====
+with left:
+    st.markdown("### Products")
+    st.markdown("**B2B**")
+    st.markdown("- Virtual Account")
+    st.markdown("- BNPL")
+    st.markdown("- Installment")
+    st.markdown("- Card Payment")
 
-# ===== Overview =====
-st.header("Overview")
-st.write("""
-Virtual Account (VA) allows merchants to collect payments using unique virtual account numbers.
-This page helps you choose the correct integration based on your business model.
-""")
+# ===== RIGHT: SECTION NAV =====
+with right:
+    st.markdown("### Sections")
+    st.markdown("- [Overview](#overview)")
+    st.markdown("- [Use case](#use-case)")
+    st.markdown("- [Integration Methods](#integration-methods)")
 
-# ===== Use case =====
-st.header("Use case")
+# ===== CENTER: CONTENT =====
+with center:
+    st.markdown("**B2B > Virtual Account**")
+    st.title("Virtual Account (VA)")
 
-st.subheader("Direct Merchant")
-st.write("""
-You are a Direct Merchant if you collect payments directly from end users
-and do not manage sub-merchants.
-""")
+    st.markdown('<a name="overview"></a>', unsafe_allow_html=True)
+    st.header("Overview")
+    st.write("Virtual Account enables merchants to collect payments via unique account numbers.")
 
-st.subheader("Master Merchant")
-st.write("""
-You are a Master Merchant if you operate a platform or marketplace
-and manage multiple sub-merchants.
-""")
+    st.markdown('<a name="use-case"></a>', unsafe_allow_html=True)
+    st.header("Use case")
 
-# ===== Integration Methods =====
-st.header("Integration Methods")
+    st.subheader("Direct Merchant")
+    st.write("Collect payments directly from end users.")
 
-st.subheader("Direct Merchant")
+    st.subheader("Master Merchant")
+    st.write("Operate a platform managing sub-merchants.")
 
-st.page_link(
-    "pages/b2b_va_direct_basic.py",
-    label="➡️ Basic Integration",
-)
+    st.markdown('<a name="integration-methods"></a>', unsafe_allow_html=True)
+    st.header("Integration Methods")
 
-st.page_link(
-    "pages/b2b_va_direct_h2h.py",
-    label="➡️ Host-to-Host Integration",
-)
+    st.subheader("Direct Merchant")
+    st.page_link("pages/b2b_va_direct_basic.py", "➡️ Direct MRC / Basic")
+    st.page_link("pages/b2b_va_direct_h2h.py", "➡️ Direct MRC / Host-to-Host")
 
-st.subheader("Master Merchant")
-
-st.page_link(
-    "pages/b2b_va_master_basic.py",
-    label="➡️ Basic Integration",
-)
-
-st.page_link(
-    "pages/b2b_va_master_h2h.py",
-    label="➡️ Host-to-Host Integration",
-)
+    st.subheader("Master Merchant")
+    st.page_link("pages/b2b_va_master_basic.py", "➡️ Master MRC / Basic")
+    st.page_link("pages/b2b_va_master_h2h.py", "➡️ Master MRC / Host-to-Host")
