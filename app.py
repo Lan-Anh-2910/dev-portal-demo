@@ -3,30 +3,52 @@ import pandas as pd
 
 st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 
-# ---------- DATA ----------
+# ---------- SECTION TEMPLATES ----------
+B2B_SECTIONS = [
+    "Overview",
+    "Use case",
+    "Integrate Methods",
+    "Sandbox",
+    "API Reference",
+    "Security",
+    "Webhook",
+    "Error Codes"
+]
+
+CROSS_BORDER_SECTIONS = [
+    "Overview",
+    "Flow",
+    "Sandbox",
+    "API Reference",
+    "Security",
+    "Webhook",
+    "Error Codes"
+]
+
+# ---------- NAV STRUCTURE ----------
 NAV = {
     "B2B": {
-        "VA": ["Overview", "Use case", "Sandbox", "API Reference"],
-        "BNPL": ["Overview", "API Reference"],
-        "Installment": ["Overview", "API Reference"],
-        "Card Payment": ["Overview", "API Reference"]
+        "VA": B2B_SECTIONS,
+        "BNPL": B2B_SECTIONS,
+        "Installment": B2B_SECTIONS,
+        "Card Payment": B2B_SECTIONS,
     },
     "Bill": {
-        "Bill Payment": ["Overview", "API Reference"],
-        "Insurance": ["Overview", "API Reference"]
+        "Bill Payment": B2B_SECTIONS,
+        "Insurance": B2B_SECTIONS,
     },
     "Leadgen": {
-        "Overview": ["Overview"]
+        "Leadgen": ["Overview"]
     },
     "Cross-border": {
-        "Collection": ["Overview", "Flow", "Sandbox", "API Reference"],
-        "Disbursement": ["Overview", "Flow", "Sandbox", "API Reference"],
-        "Check transaction status": ["Overview", "API Reference"],
-        "Check balance": ["Overview", "API Reference"],
-        "Payment": ["Overview", "API Reference"],
-        "Refund": ["Overview", "API Reference"],
-        "Settlement": ["Overview", "API Reference"],
-        "Onboarding sellers": ["Overview", "API Reference"]
+        "Collection": CROSS_BORDER_SECTIONS,
+        "Disbursement": CROSS_BORDER_SECTIONS,
+        "Check transaction status": CROSS_BORDER_SECTIONS,
+        "Check balance": CROSS_BORDER_SECTIONS,
+        "Payment": CROSS_BORDER_SECTIONS,
+        "Refund": CROSS_BORDER_SECTIONS,
+        "Settlement": CROSS_BORDER_SECTIONS,
+        "Onboarding sellers": CROSS_BORDER_SECTIONS,
     }
 }
 
@@ -41,7 +63,7 @@ if "section" not in st.session_state:
     st.session_state.section = "Overview"
 
 # ---------- LAYOUT ----------
-left, center, right = st.columns([1.8, 4.4, 1.8])
+left, center, right = st.columns([1.9, 4.2, 1.9])
 
 # ---------- LEFT: PRODUCT + SUBPRODUCT ----------
 with left:
@@ -56,19 +78,11 @@ with left:
                 and st.session_state.subproduct == sp
             )
 
-            label = f"👉 {sp}" if is_active else f"&nbsp;&nbsp;{sp}"
-
-            if st.markdown(
-                f"<div style='cursor:pointer; color:{'#1f77b4' if is_active else '#444'}'>{label}</div>",
-                unsafe_allow_html=True
-            ):
-                pass
-
             if st.button(
                 sp,
                 key=f"{product}_{sp}",
-                help=sp,
-                use_container_width=True
+                use_container_width=True,
+                type="primary" if is_active else "secondary"
             ):
                 st.session_state.product = product
                 st.session_state.subproduct = sp
@@ -103,11 +117,21 @@ with center:
     st.title(st.session_state.section)
     st.divider()
 
+    # -------- CONTENT MOCK --------
     if st.session_state.section == "Overview":
         st.markdown("""
         Đây là **Overview**.
 
-        Nội dung demo cho API documentation portal.
+        Nội dung mô tả tổng quan API, phạm vi sử dụng,
+        đối tượng tích hợp và luồng chính.
+        """)
+
+    elif st.session_state.section == "Flow":
+        st.markdown("""
+        ### Flow Diagram
+        1. Client gửi request
+        2. System validate
+        3. Process & response
         """)
 
     elif st.session_state.section == "API Reference":
@@ -134,4 +158,4 @@ Content-Type: application/json
         })
 
     else:
-        st.info("Nội dung đang được cập nhật.")
+        st.info("Nội dung demo – sẽ cập nhật sau.")
