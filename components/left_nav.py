@@ -7,18 +7,31 @@ def nav_item(label, page_key):
 def render_left_nav():
     st.markdown("### Products")
 
+    # ======================
+    # B2B
+    # ======================
     with st.expander("B2B", expanded=True):
         nav_item("VA", "B2B_VA")
         nav_item("BNPL", "B2B_BNPL")
         nav_item("Installment", "B2B_INSTALLMENT")
         nav_item("Card Payment", "B2B_CARD")
 
+    # ======================
+    # Bill
+    # ======================
     with st.expander("Bill"):
         nav_item("Bill Payment", "BILL_PAYMENT")
         nav_item("Insurance", "BILL_INSURANCE")
 
-    st.markdown("### Leadgen")
+    # ======================
+    # Leadgen (Product độc lập)
+    # ======================
+    if st.button("Leadgen", use_container_width=True):
+        st.session_state.selected_page = "LEADGEN"
 
+    # ======================
+    # Cross-border
+    # ======================
     with st.expander("Cross-border"):
         nav_item("Collection", "CB_COLLECTION")
         nav_item("Disbursement", "CB_DISBURSEMENT")
