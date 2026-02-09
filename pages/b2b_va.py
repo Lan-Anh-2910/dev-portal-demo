@@ -1,102 +1,57 @@
 import streamlit as st
 
-def anchor(id):
-    st.markdown(f"<a id='{id}'></a>", unsafe_allow_html=True)
+st.set_page_config(page_title="B2B - Virtual Account", layout="wide")
 
-def scroll_button(label, anchor_id):
-    st.markdown(
-        f"""
-        <a href="#{anchor_id}">
-            <button style="margin:4px 0">{label}</button>
-        </a>
-        """,
-        unsafe_allow_html=True
-    )
+# ===== Breadcrumb =====
+st.markdown("**B2B > Virtual Account**")
 
-def render():
-    col_left, col_main, col_right = st.columns([2, 6, 2])
+st.title("Virtual Account (VA)")
 
-    # ========== RIGHT NAV ==========
-    with col_right:
-        st.markdown("### Sections")
-        st.markdown("""
-        - Overview
-        - Use case
-        - Integrate Methods
-        - Sandbox
-        - API Reference
-        - Security
-        - Webhook
-        - Error Codes
-        """)
+# ===== Overview =====
+st.header("Overview")
+st.write("""
+Virtual Account (VA) allows merchants to collect payments using unique virtual account numbers.
+This page helps you choose the correct integration based on your business model.
+""")
 
-    # ========== MAIN CONTENT ==========
-    with col_main:
-        anchor("overview")
-        st.header("VA – Virtual Account")
-        st.write("Virtual Account enables merchants to receive payments via dedicated accounts.")
+# ===== Use case =====
+st.header("Use case")
 
-        anchor("use-case")
-        st.header("Use case")
+st.subheader("Direct Merchant")
+st.write("""
+You are a Direct Merchant if you collect payments directly from end users
+and do not manage sub-merchants.
+""")
 
-        st.subheader("Direct Merchant")
-        st.write("You collect payments directly from end users.")
+st.subheader("Master Merchant")
+st.write("""
+You are a Master Merchant if you operate a platform or marketplace
+and manage multiple sub-merchants.
+""")
 
-        scroll_button("Basic Integration", "basic")
-        scroll_button("Host-to-Host Integration", "h2h")
+# ===== Integration Methods =====
+st.header("Integration Methods")
 
-        st.subheader("Master Merchant")
-        st.write("You manage sub-merchants and collect on their behalf.")
+st.subheader("Direct Merchant")
 
-        scroll_button("Basic Integration", "basic")
-        scroll_button("Host-to-Host Integration", "h2h")
+st.page_link(
+    "pages/b2b_va_direct_basic.py",
+    label="➡️ Basic Integration",
+)
 
-        # ========== INTEGRATION METHODS ==========
-        anchor("integrate")
-        st.header("Integrate Methods")
+st.page_link(
+    "pages/b2b_va_direct_h2h.py",
+    label="➡️ Host-to-Host Integration",
+)
 
-        anchor("basic")
-        st.subheader("Basic Integration")
-        st.write("Simple integration using REST APIs.")
+st.subheader("Master Merchant")
 
-        st.markdown("**Supported use cases:** Direct, Master")
+st.page_link(
+    "pages/b2b_va_master_basic.py",
+    label="➡️ Basic Integration",
+)
 
-        anchor("sandbox")
-        st.header("Sandbox")
-        st.table({
-            "Endpoint": ["/sandbox/va"],
-            "Method": ["POST"],
-            "Description": ["Create virtual account"]
-        })
-
-        anchor("api")
-        st.header("API Reference")
-        st.code("""
-POST /va/create
-{
-  "amount": 100000,
-  "currency": "VND"
-}
-        """)
-
-        anchor("security")
-        st.header("Security")
-        st.write("OAuth2, IP Whitelist")
-
-        anchor("webhook")
-        st.header("Webhook")
-        st.code("""
-POST /webhook/va/payment
-        """)
-
-        anchor("error")
-        st.header("Error Codes")
-        st.table({
-            "Code": ["VA_001", "VA_002"],
-            "Message": ["Invalid amount", "Account not found"]
-        })
-
-        # ========== HOST TO HOST ==========
-        anchor("h2h")
-        st.subheader("Host-to-Host Integration")
-        st.write("Advanced integration with direct system connection.")
+st.page_link(
+    "pages/b2b_va_master_h2h.py",
+    label="➡️ Host-to-Host Integration",
+)
