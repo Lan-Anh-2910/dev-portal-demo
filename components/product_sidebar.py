@@ -5,17 +5,15 @@ def render_product_sidebar():
         st.markdown("## Products")
 
         with st.expander("B2B", expanded=True):
-            st.page_link(
-                page="b2b_va",
-                label="Virtual Account"
-            )
+            if st.button("Virtual Account"):
+                st.session_state.route = "b2b_va"
+
             st.markdown("BNPL")
             st.markdown("Installment")
             st.markdown("Card Payment")
 
         with st.expander("Bill"):
             st.markdown("Bill Payment")
-            st.markdown("Insurance")
 
         with st.expander("Leadgen"):
             st.markdown("Leadgen")
