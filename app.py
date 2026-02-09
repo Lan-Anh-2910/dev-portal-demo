@@ -1,65 +1,50 @@
 import streamlit as st
 import pandas as pd
 
+st.set_page_config(page_title="Dev Portal Demo", layout="wide")
+
+# ---------- CSS ----------
 st.markdown("""
 <style>
-/* Sidebar menu item */
+.nav-title {
+    margin-top: 14px;
+    font-weight: 600;
+    color: #333;
+}
 .nav-item {
-    padding: 8px 12px;
-    margin-left: 12px;
-    border-radius: 8px;
+    padding: 6px 10px;
+    margin-left: 18px;
+    border-radius: 6px;
     cursor: pointer;
     color: #555;
-    font-size: 15px;
 }
-
 .nav-item:hover {
     background-color: #f5f5f5;
-    color: #000;
 }
-
-/* Active item */
 .nav-item.active {
     background-color: #fde7f3;
     color: #d63384;
     font-weight: 600;
 }
-
-/* Product title */
-.nav-title {
-    margin-top: 16px;
-    margin-bottom: 6px;
-    font-weight: 600;
-    color: #333;
+.toggle {
+    cursor: pointer;
+    color: #888;
+    margin-right: 6px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-st.set_page_config(page_title="Dev Portal Demo", layout="wide")
-
 # ---------- SECTION TEMPLATES ----------
 B2B_SECTIONS = [
-    "Overview",
-    "Use case",
-    "Integrate Methods",
-    "Sandbox",
-    "API Reference",
-    "Security",
-    "Webhook",
-    "Error Codes"
+    "Overview", "Use case", "Integrate Methods",
+    "Sandbox", "API Reference", "Security", "Webhook", "Error Codes"
 ]
 
 CROSS_BORDER_SECTIONS = [
-    "Overview",
-    "Flow",
-    "Sandbox",
-    "API Reference",
-    "Security",
-    "Webhook",
-    "Error Codes"
+    "Overview", "Flow", "Sandbox",
+    "API Reference", "Security", "Webhook", "Error Codes"
 ]
 
-# ---------- NAV STRUCTURE ----------
 NAV = {
     "B2B": {
         "VA": B2B_SECTIONS,
@@ -89,72 +74,61 @@ NAV = {
 # ---------- SESSION STATE ----------
 if "product" not in st.session_state:
     st.session_state.product = "B2B"
-
 if "subproduct" not in st.session_state:
     st.session_state.subproduct = "VA"
-
 if "section" not in st.session_state:
     st.session_state.section = "Overview"
 
-# ---------- LAYOUT ----------
-left, center, right = st.columns([1.9, 4.2, 1.9])
+# collapse state
+for p, subs in NAV.items():
+    for sp in subs:
+        key = f"open_{p}_{sp}"
+        if key not in st.session_state:
+            st.session_state[key] = False
 
-# ---------- LEFT: PRODUCT + SUBPRODUCT ----------
+# ---------- LAYOUT ----------
+left, center, right = st.columns([2, 4, 2])
+
+# ---------- LEFT: COLLAPSIBLE MENU ----------
 with left:
     st.markdown("### Overview")
 
     for product, subs in NAV.items():
-        st.markdown(
-            f"<div class='nav-title'>{product}</div>",
-            unsafe_allow_html=True
-        )
+        st.markdown(f"<div class='nav-title'>{product}</div>", unsafe_allow_html=True)
 
         for sp in subs.keys():
+            open_key = f"open_{product}_{sp}"
             is_active = (
                 st.session_state.product == product
                 and st.session_state.subproduct == sp
             )
 
-            css_class = "nav-item active" if is_active else "nav-item"
+            icon = "▼" if st.session_state[open_key] else "▶"
 
-            if st.markdown(
-                f"<div class='{css_class}'>{sp}</div>",
-                unsafe_allow_html=True
-            ):
-                pass
+            cols = st.columns([0.15, 0.85])
+            with cols[0]:
+                if st.button(icon, key=f"toggle_{product}_{sp}"):
+                    st.session_state[open_key] = not st.session_state[open_key]
+                    st.rerun()
 
-            # Invisible click handler
-            if st.button(
-                f"_click_{product}_{sp}",
-                key=f"click_{product}_{sp}",
-                help=sp,
-                use_container_width=True
-            ):
-                st.session_state.product = product
-                st.session_state.subproduct = sp
-                st.session_state.section = NAV[product][sp][0]
-                st.rerun()
-
+            with cols[1]:
+                css = "nav-item active" if is_active else "nav-item"
+                if st.button(sp, key=f"nav_{product}_{sp}", use_container_width=True):
+                    st.session_state.product = product
+                    st.session_state.subproduct = sp
+                    st.session_state.section = NAV[product][sp][0]
+                    st.session_state[open_key] = True
+                    st.rerun()
 
 # ---------- RIGHT: SECTIONS ----------
 with right:
     st.markdown("### Sections")
-
-    sections = NAV[st.session_state.product][st.session_state.subproduct]
-
-    for sec in sections:
-        is_active = st.session_state.section == sec
-
-        if st.button(
-            sec,
-            key=f"sec_{sec}",
-            use_container_width=True,
-            type="primary" if is_active else "secondary"
-        ):
+    for sec in NAV[st.session_state.product][st.session_state.subproduct]:
+        if st.button(sec, key=f"sec_{sec}", use_container_width=True):
             st.session_state.section = sec
             st.rerun()
 
-# ---------- CENTER: CONTENT ----------
+# ---------- CENTER: FAKE CONTENT ----------
 with center:
     st.markdown(
         f"##### {st.session_state.product} / {st.session_state.subproduct}"
@@ -162,25 +136,27 @@ with center:
     st.title(st.session_state.section)
     st.divider()
 
-    # -------- CONTENT MOCK --------
-    if st.session_state.section == "Overview":
-        st.markdown("""
-        Đây là **Overview**.
+    # ---- FAKE CONTENT ----
+    st.markdown(f"""
+### {st.session_state.section}
 
-        Nội dung mô tả tổng quan API, phạm vi sử dụng,
-        đối tượng tích hợp và luồng chính.
-        """)
+This is **mock content** for demo purposes.
 
-    elif st.session_state.section == "Flow":
-        st.markdown("""
-        ### Flow Diagram
-        1. Client gửi request
-        2. System validate
-        3. Process & response
-        """)
+**Description**
+This section describes how the `{st.session_state.subproduct}` feature works in the `{st.session_state.product}` product.
 
-    elif st.session_state.section == "API Reference":
-        st.subheader("POST /api/v1/example")
+**Key Points**
+- Simple integration
+- Secure authentication
+- Scalable architecture
+- Suitable for sandbox and production
+
+**Notes**
+All data shown here is fake and used only to demonstrate UI and structure.
+""")
+
+    if st.session_state.section == "API Reference":
+        st.subheader("POST /api/v1/demo")
 
         st.markdown("**Headers**")
         st.code("""
@@ -188,19 +164,15 @@ Authorization: Bearer {API_KEY}
 Content-Type: application/json
 """)
 
-        st.markdown("**Request Parameters**")
-        df = pd.DataFrame({
-            "Field": ["amount", "currency"],
-            "Type": ["number", "string"],
-            "Required": ["Yes", "Yes"]
+        st.markdown("**Request Body**")
+        st.json({
+            "amount": 100000,
+            "currency": "VND",
+            "order_id": "ORDER_123"
         })
-        st.table(df)
 
-        st.markdown("**Example Response**")
+        st.markdown("**Response Example**")
         st.json({
             "status": "success",
-            "data": {"id": "demo_001"}
+            "transaction_id": "TXN_456"
         })
-
-    else:
-        st.info("Nội dung demo – sẽ cập nhật sau.")
