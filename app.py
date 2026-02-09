@@ -3,99 +3,59 @@ import pandas as pd
 
 st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 
-# ---------- DATA ----------
-PRODUCTS = {
-    "Cross-border": [
-        "Overview", "Flow", "Sandbox",
-        "API Reference", "Webhook", "Security", "Error Codes"
-    ],
-    "B2B": [
-        "Overview", "Use case", "Integrate Methods",
-        "Sandbox", "API Reference", "Webhook", "Error Codes"
-    ],
-    "Bill": [
-        "Overview", "API Reference"
-    ],
-    "Leadgen": [
-        "Overview"
-    ]
+# ---------- DATA STRUCTURE ----------
+NAV = {
+    "B2B": {
+        "VA": ["Overview", "Use case", "Sandbox", "API Reference", "Webhook", "Error Codes"],
+        "BNPL": ["Overview", "API Reference"],
+        "Installment": ["Overview", "API Reference"],
+        "Card Payment": ["Overview", "API Reference"]
+    },
+    "Bill": {
+        "Bill Payment": ["Overview", "API Reference"],
+        "Insurance": ["Overview", "API Reference"]
+    },
+    "Leadgen": {
+        "Overview": ["Overview"]
+    },
+    "Cross-border": {
+        "Collection": ["Overview", "Flow", "Sandbox", "API Reference"],
+        "Disbursement": ["Overview", "Flow", "Sandbox", "API Reference"],
+        "Check transaction status": ["Overview", "API Reference"],
+        "Check balance": ["Overview", "API Reference"],
+        "Payment": ["Overview", "API Reference"],
+        "Refund": ["Overview", "API Reference"],
+        "Settlement": ["Overview", "API Reference"],
+        "Onboarding sellers": ["Overview", "API Reference"]
+    }
 }
 
 # ---------- SESSION STATE ----------
 if "product" not in st.session_state:
-    st.session_state.product = "Cross-border"
+    st.session_state.product = "B2B"
+
+if "subproduct" not in st.session_state:
+    st.session_state.subproduct = "VA"
 
 if "section" not in st.session_state:
     st.session_state.section = "Overview"
 
 # ---------- LAYOUT ----------
-left, center, right = st.columns([1.2, 3.6, 1.6])
+left, center, right = st.columns([1.6, 3.8, 1.6])
 
-# ---------- LEFT: PRODUCTS ----------
+# ---------- LEFT: PRODUCT + SUBPRODUCT ----------
 with left:
     st.markdown("### Products")
-    for p in PRODUCTS.keys():
-        if st.button(
-            p,
-            use_container_width=True,
-            type="primary" if st.session_state.product == p else "secondary"
-        ):
-            st.session_state.product = p
-            st.session_state.section = PRODUCTS[p][0]
 
-# ---------- RIGHT: SUBNAMES ----------
-with right:
-    st.markdown("### Sections")
-    for s in PRODUCTS[st.session_state.product]:
-        if st.button(
-            s,
-            use_container_width=True,
-            type="primary" if st.session_state.section == s else "secondary"
-        ):
-            st.session_state.section = s
+    for product, subs in NAV.items():
+        st.markdown(f"**{product}**")
 
-# ---------- CENTER: CONTENT ----------
-with center:
-    st.markdown(f"##### {st.session_state.product}")
-    st.title(st.session_state.section)
-    st.divider()
+        choice = st.radio(
+            "",
+            list(subs.keys()),
+            key=f"sub_{product}",
+            label_visibility="collapsed"
+        )
 
-    # ---- CONTENT TEMPLATE ----
-    if st.session_state.section == "Overview":
-        st.markdown("""
-        Đây là **Overview** của product.
-
-        Nội dung demo, mô tả tổng quan, phạm vi sử dụng,
-        và các thông tin cần biết trước khi tích hợp.
-        """)
-
-    elif st.session_state.section == "API Reference":
-        st.subheader("POST /api/v1/example")
-
-        st.markdown("**Description**")
-        st.write("API endpoint dùng cho demo Dev Portal.")
-
-        st.markdown("**Headers**")
-        st.code("""
-Authorization: Bearer {API_KEY}
-Content-Type: application/json
-""")
-
-        st.markdown("**Request Parameters**")
-        df = pd.DataFrame({
-            "Field": ["amount", "currency"],
-            "Type": ["number", "string"],
-            "Required": ["Yes", "Yes"]
-        })
-        st.table(df)
-
-        st.markdown("**Example Response**")
-        st.json({
-            "status": "success",
-            "data": {
-                "transaction_id": "demo_123"
-            }
-        })
-
-    else:
-        st.info("Nội dung đang được cập nhật.")
+        if choice:
+            st.session_state.product_
