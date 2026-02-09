@@ -3,7 +3,6 @@ from components.section_sidebar import render_section_sidebar
 
 st.set_page_config(layout="wide")
 
-# LAYOUT: CENTER + RIGHT
 center, right = st.columns([4.5, 1.5])
 
 # RIGHT: SECTION SIDEBAR
@@ -31,5 +30,11 @@ with center:
     st.header("Integration Methods")
 
     st.subheader("Direct Merchant")
-    st.page_link("pages/b2b_va_direct_basic.py", "Direct MRC / Basic")
-    st.page_link("pages/b2b_va_direct_h2h.py", "Direct MRC / H2H")
+    st.page_link(
+        "pages/b2b_va_direct_basic.py",
+        label="Direct MRC / Basic"
+    )
+    st.page_link(
+        "pages/b2b_va_direct_h2h.py",
+        label="Direct MRC / H2H"
+    )
