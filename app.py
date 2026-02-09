@@ -1,35 +1,63 @@
 import streamlit as st
-from components.left_nav import render_left_nav
-from components.right_nav import render_right_nav
-from pages.b2b_va import render_b2b_va
 
-st.set_page_config(
-    page_title="Developer Portal Demo",
-    layout="wide"
-)
+st.set_page_config(layout="wide")
 
-if "selected_page" not in st.session_state:
-    st.session_state.selected_page = None
+if "page" not in st.session_state:
+    st.session_state.page = "b2b_va"
 
-left, center, right = st.columns([1.2, 4.5, 1.6])
+# ========== LEFT NAV ==========
+with st.sidebar:
+    st.title("Dev Portal")
 
-with left:
-    render_left_nav()
+    with st.expander("B2B", expanded=True):
+        if st.button("VA"):
+            st.session_state.page = "b2b_va"
+        if st.button("BNPL"):
+            st.session_state.page = "b2b_bnpl"
+        if st.button("Installment"):
+            st.session_state.page = "b2b_installment"
+        if st.button("Card Payment"):
+            st.session_state.page = "b2b_card"
 
-with right:
-    render_right_nav(st.session_state.selected_page)
+    with st.expander("Bill"):
+        if st.button("Bill Payment"):
+            st.session_state.page = "bill_payment"
+        if st.button("Insurance"):
+            st.session_state.page = "bill_insurance"
 
-with center:
-    if st.session_state.selected_page is None:
-        st.title("Welcome to Developer Portal")
-        st.write("""
-Select a product from the left navigation to view API documentation.
+    if st.button("Leadgen"):
+        st.session_state.page = "leadgen"
 
-This portal provides:
-- Integration guides
-- Sandbox environment
-- API references
-- Security & webhook specifications
-""")
-    elif st.session_state.selected_page == "B2B_VA":
-        render_b2b_va()
+    with st.expander("Cross-border"):
+        if st.button("Collection"):
+            st.session_state.page = "cb_collection"
+        if st.button("Disbursement"):
+            st.session_state.page = "cb_disbursement"
+        if st.button("Payment"):
+            st.session_state.page = "cb_payment"
+
+# ========== PAGE ROUTER ==========
+page = st.session_state.page
+
+if page == "b2b_va":
+    import pages.b2b_va as page_file
+elif page == "b2b_bnpl":
+    import pages.b2b_bnpl as page_file
+elif page == "b2b_installment":
+    import pages.b2b_installment as page_file
+elif page == "b2b_card":
+    import pages.b2b_card as page_file
+elif page == "bill_payment":
+    import pages.bill_payment as page_file
+elif page == "bill_insurance":
+    import pages.bill_insurance as page_file
+elif page == "leadgen":
+    import pages.leadgen as page_file
+elif page == "cb_collection":
+    import pages.cb_collection as page_file
+elif page == "cb_disbursement":
+    import pages.cb_disbursement as page_file
+elif page == "cb_payment":
+    import pages.cb_payment as page_file
+
+page_file.render()
