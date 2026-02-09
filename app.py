@@ -6,22 +6,22 @@ st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 # ---------- CSS ----------
 st.markdown("""
 <style>
-.nav-title {
-    margin-top: 14px;
+.nav-product {
     font-weight: 600;
+    margin-top: 12px;
     color: #333;
 }
-.nav-item {
+.nav-sub {
     padding: 6px 10px;
-    margin-left: 18px;
+    margin-left: 22px;
     border-radius: 6px;
     cursor: pointer;
     color: #555;
 }
-.nav-item:hover {
+.nav-sub:hover {
     background-color: #f5f5f5;
 }
-.nav-item.active {
+.nav-sub.active {
     background-color: #fde7f3;
     color: #d63384;
     font-weight: 600;
@@ -37,14 +37,17 @@ st.markdown("""
 # ---------- SECTION TEMPLATES ----------
 B2B_SECTIONS = [
     "Overview", "Use case", "Integrate Methods",
-    "Sandbox", "API Reference", "Security", "Webhook", "Error Codes"
+    "Sandbox", "API Reference", "Security",
+    "Webhook", "Error Codes"
 ]
 
 CROSS_BORDER_SECTIONS = [
     "Overview", "Flow", "Sandbox",
-    "API Reference", "Security", "Webhook", "Error Codes"
+    "API Reference", "Security",
+    "Webhook", "Error Codes"
 ]
 
+# ---------- NAV ----------
 NAV = {
     "B2B": {
         "VA": B2B_SECTIONS,
@@ -79,45 +82,53 @@ if "subproduct" not in st.session_state:
 if "section" not in st.session_state:
     st.session_state.section = "Overview"
 
-# collapse state
-for p, subs in NAV.items():
-    for sp in subs:
-        key = f"open_{p}_{sp}"
-        if key not in st.session_state:
-            st.session_state[key] = False
+# product open state
+for product in NAV.keys():
+    key = f"open_{product}"
+    if key not in st.session_state:
+        st.session_state[key] = False
 
 # ---------- LAYOUT ----------
 left, center, right = st.columns([2, 4, 2])
 
-# ---------- LEFT: COLLAPSIBLE MENU ----------
+# ---------- LEFT: PRODUCT COLLAPSE ----------
 with left:
     st.markdown("### Overview")
 
     for product, subs in NAV.items():
-        st.markdown(f"<div class='nav-title'>{product}</div>", unsafe_allow_html=True)
+        open_key = f"open_{product}"
+        icon = "▼" if st.session_state[open_key] else "▶"
 
-        for sp in subs.keys():
-            open_key = f"open_{product}_{sp}"
-            is_active = (
-                st.session_state.product == product
-                and st.session_state.subproduct == sp
+        cols = st.columns([0.15, 0.85])
+        with cols[0]:
+            if st.button(icon, key=f"toggle_{product}"):
+                st.session_state[open_key] = not st.session_state[open_key]
+                st.rerun()
+
+        with cols[1]:
+            st.markdown(
+                f"<div class='nav-product'>{product}</div>",
+                unsafe_allow_html=True
             )
 
-            icon = "▼" if st.session_state[open_key] else "▶"
+        # show subproducts ONLY when open
+        if st.session_state[open_key]:
+            for sp in subs.keys():
+                is_active = (
+                    st.session_state.product == product
+                    and st.session_state.subproduct == sp
+                )
 
-            cols = st.columns([0.15, 0.85])
-            with cols[0]:
-                if st.button(icon, key=f"toggle_{product}_{sp}"):
-                    st.session_state[open_key] = not st.session_state[open_key]
-                    st.rerun()
+                css = "nav-sub active" if is_active else "nav-sub"
 
-            with cols[1]:
-                css = "nav-item active" if is_active else "nav-item"
-                if st.button(sp, key=f"nav_{product}_{sp}", use_container_width=True):
+                if st.button(
+                    sp,
+                    key=f"sub_{product}_{sp}",
+                    use_container_width=True
+                ):
                     st.session_state.product = product
                     st.session_state.subproduct = sp
                     st.session_state.section = NAV[product][sp][0]
-                    st.session_state[open_key] = True
                     st.rerun()
 
 # ---------- RIGHT: SECTIONS ----------
@@ -136,23 +147,22 @@ with center:
     st.title(st.session_state.section)
     st.divider()
 
-    # ---- FAKE CONTENT ----
     st.markdown(f"""
 ### {st.session_state.section}
 
 This is **mock content** for demo purposes.
 
 **Description**
-This section describes how the `{st.session_state.subproduct}` feature works in the `{st.session_state.product}` product.
+This section explains the `{st.session_state.subproduct}` feature
+under `{st.session_state.product}`.
 
-**Key Points**
-- Simple integration
+**Highlights**
+- Simple API design
 - Secure authentication
-- Scalable architecture
-- Suitable for sandbox and production
+- Sandbox & production support
+- Webhook integration available
 
-**Notes**
-All data shown here is fake and used only to demonstrate UI and structure.
+> All information shown here is fake and for UI demonstration only.
 """)
 
     if st.session_state.section == "API Reference":
