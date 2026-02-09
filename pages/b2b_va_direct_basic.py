@@ -1,131 +1,54 @@
 import streamlit as st
+from components.section_sidebar import render_section_sidebar
 
-st.set_page_config(page_title="VA - Direct Merchant - Basic", layout="wide")
+st.set_page_config(layout="wide")
 
-# ===== Breadcrumb =====
-st.markdown(
-    """
-**[B2B](app.py) > [Virtual Account](pages/b2b_va.py) > Direct Merchant > Basic Integration**
-""",
-    unsafe_allow_html=True
-)
+center, right = st.columns([4.5, 1.5])
 
-st.title("VA – Direct Merchant – Basic Integration")
+# RIGHT: SECTION SIDEBAR
+with right:
+    render_section_sidebar([
+        "Overview",
+        "Flow",
+        "Sandbox",
+        "API Reference",
+        "Security",
+        "Webhook",
+        "Error Codes"
+    ])
 
-# ===== CTA LINKS =====
-st.info("Explore other VA integrations:")
+# CENTER CONTENT
+with center:
+    st.markdown("**B2B > VA > Direct Merchant > Basic**")
+    st.title("VA – Direct Merchant – Basic")
 
-col1, col2, col3 = st.columns(3)
+    st.markdown('<a name="overview"></a>', unsafe_allow_html=True)
+    st.header("Overview")
+    st.write("Basic integration for Direct Merchant.")
 
-with col1:
-    st.page_link(
-        "pages/b2b_va_direct_h2h.py",
-        label="Direct Merchant / Host-to-Host"
-    )
+    st.markdown('<a name="flow"></a>', unsafe_allow_html=True)
+    st.header("Flow")
+    st.write("Create VA → Pay → Webhook")
 
-with col2:
-    st.page_link(
-        "pages/b2b_va_master_basic.py",
-        label="Master Merchant / Basic"
-    )
+    st.markdown('<a name="sandbox"></a>', unsafe_allow_html=True)
+    st.header("Sandbox")
+    st.code("https://sandbox-api.example.com")
 
-with col3:
-    st.page_link(
-        "pages/b2b_va_master_h2h.py",
-        label="Master Merchant / Host-to-Host"
-    )
+    st.markdown('<a name="api-reference"></a>', unsafe_allow_html=True)
+    st.header("API Reference")
+    st.code("POST /v1/virtual-accounts")
 
-# ===== Overview =====
-st.header("Overview")
-st.write("""
-This integration is designed for Direct Merchants who want a simple and quick
-way to create and manage Virtual Accounts.
-""")
+    st.markdown('<a name="security"></a>', unsafe_allow_html=True)
+    st.header("Security")
+    st.write("API Key authentication")
 
-# ===== Flow =====
-st.header("Flow")
-st.write("""
-1. Create Virtual Account  
-2. Customer transfers funds  
-3. System receives payment notification  
-""")
+    st.markdown('<a name="webhook"></a>', unsafe_allow_html=True)
+    st.header("Webhook")
+    st.code("POST /webhook/va")
 
-# ===== Sandbox =====
-st.header("Sandbox")
-
-st.write("**Base URL**")
-st.code("https://sandbox-api.example.com")
-
-st.write("**Sample Credentials**")
-st.code("""
-client_id: sandbox_client_id
-api_key: sandbox_api_key
-""")
-
-st.write("**Available APIs**")
-st.table({
-    "Method": ["POST", "GET"],
-    "Endpoint": [
-        "/v1/virtual-accounts",
-        "/v1/virtual-accounts/{va_id}"
-    ],
-    "Description": [
-        "Create virtual account",
-        "Get virtual account detail"
-    ]
-})
-
-# ===== API Reference =====
-st.header("API Reference")
-
-st.subheader("Create Virtual Account")
-
-st.code("""
-POST /v1/virtual-accounts
-
-Headers:
-Authorization: Bearer <api_key>
-
-Request body:
-{
-  "requestId": "123456",
-  "amount": 100000,
-  "currency": "VND"
-}
-""", language="json")
-
-st.code("""
-Response:
-{
-  "vaId": "VA123",
-  "status": "ACTIVE"
-}
-""", language="json")
-
-# ===== Security =====
-st.header("Security")
-st.write("""
-All requests must be signed using API Key and Request ID.
-""")
-
-# ===== Webhook =====
-st.header("Webhook")
-st.write("""
-Webhook will be sent when payment is completed.
-""")
-
-st.code("""
-POST /webhook/va/payment
-""")
-
-# ===== Error Codes =====
-st.header("Error Codes")
-
-st.table({
-    "Code": ["400", "401", "500"],
-    "Message": [
-        "Invalid request",
-        "Unauthorized",
-        "Internal server error"
-    ]
-})
+    st.markdown('<a name="error-codes"></a>', unsafe_allow_html=True)
+    st.header("Error Codes")
+    st.table({
+        "Code": ["400", "401", "500"],
+        "Message": ["Bad request", "Unauthorized", "Server error"]
+    })
