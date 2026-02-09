@@ -22,6 +22,12 @@ with center:
     st.markdown("**B2B > VA > Direct Merchant > Basic**")
     st.title("VA – Direct Merchant – Basic")
 
+    st.info("Switch integration:")
+    st.page_link(
+        "pages/b2b_va_direct_h2h.py",
+        label="Direct MRC / H2H"
+    )
+
     st.markdown('<a name="overview"></a>', unsafe_allow_html=True)
     st.header("Overview")
     st.write("Basic integration for Direct Merchant.")
