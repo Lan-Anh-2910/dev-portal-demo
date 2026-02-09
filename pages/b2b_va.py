@@ -1,116 +1,102 @@
 import streamlit as st
-import json
 
-def render_b2b_va():
+def anchor(id):
+    st.markdown(f"<a id='{id}'></a>", unsafe_allow_html=True)
 
-    st.markdown("<div id='overview'></div>", unsafe_allow_html=True)
-    st.title("B2B / Virtual Account (VA)")
+def scroll_button(label, anchor_id):
+    st.markdown(
+        f"""
+        <a href="#{anchor_id}">
+            <button style="margin:4px 0">{label}</button>
+        </a>
+        """,
+        unsafe_allow_html=True
+    )
 
-    st.write("""
-Virtual Account (VA) allows merchants to generate unique bank account numbers
-to collect payments from customers.
-""")
+def render():
+    col_left, col_main, col_right = st.columns([2, 6, 2])
 
-    st.divider()
+    # ========== RIGHT NAV ==========
+    with col_right:
+        st.markdown("### Sections")
+        st.markdown("""
+        - Overview
+        - Use case
+        - Integrate Methods
+        - Sandbox
+        - API Reference
+        - Security
+        - Webhook
+        - Error Codes
+        """)
 
-    st.markdown("<div id='usecase'></div>", unsafe_allow_html=True)
-    st.header("Use case")
+    # ========== MAIN CONTENT ==========
+    with col_main:
+        anchor("overview")
+        st.header("VA – Virtual Account")
+        st.write("Virtual Account enables merchants to receive payments via dedicated accounts.")
 
-    st.subheader("Direct Merchant")
-    st.write("""
-You operate as a single merchant and collect payments directly from customers.
+        anchor("use-case")
+        st.header("Use case")
 
-Recommended integration:
-- Basic Integration
-- Pro Integration
-""")
+        st.subheader("Direct Merchant")
+        st.write("You collect payments directly from end users.")
 
-    st.subheader("Master Merchant")
-    st.write("""
-You operate a platform or marketplace and collect payments on behalf of sub-merchants.
+        scroll_button("Basic Integration", "basic")
+        scroll_button("Host-to-Host Integration", "h2h")
 
-Recommended integration:
-- Pro Integration
-- Host-to-Host Integration
-""")
+        st.subheader("Master Merchant")
+        st.write("You manage sub-merchants and collect on their behalf.")
 
-    st.divider()
+        scroll_button("Basic Integration", "basic")
+        scroll_button("Host-to-Host Integration", "h2h")
 
-    st.markdown("<div id='integrate'></div>", unsafe_allow_html=True)
-    st.header("Integrate Methods")
+        # ========== INTEGRATION METHODS ==========
+        anchor("integrate")
+        st.header("Integrate Methods")
 
-    st.subheader("Basic Integration")
-    st.write("Redirect or SDK-based integration for quick onboarding.")
+        anchor("basic")
+        st.subheader("Basic Integration")
+        st.write("Simple integration using REST APIs.")
 
-    st.subheader("Pro Integration")
-    st.write("Full API integration with custom checkout experience.")
+        st.markdown("**Supported use cases:** Direct, Master")
 
-    st.subheader("Host-to-Host Integration")
-    st.write("Server-to-server integration for enterprise platforms.")
+        anchor("sandbox")
+        st.header("Sandbox")
+        st.table({
+            "Endpoint": ["/sandbox/va"],
+            "Method": ["POST"],
+            "Description": ["Create virtual account"]
+        })
 
-    st.divider()
+        anchor("api")
+        st.header("API Reference")
+        st.code("""
+POST /va/create
+{
+  "amount": 100000,
+  "currency": "VND"
+}
+        """)
 
-    st.markdown("<div id='sandbox'></div>", unsafe_allow_html=True)
-    st.header("Sandbox")
+        anchor("security")
+        st.header("Security")
+        st.write("OAuth2, IP Whitelist")
 
-    st.code("https://sandbox-api.company.com/va")
+        anchor("webhook")
+        st.header("Webhook")
+        st.code("""
+POST /webhook/va/payment
+        """)
 
-    st.table([
-        {"Method": "POST", "Endpoint": "/v1/virtual-accounts", "Description": "Create VA"},
-        {"Method": "GET", "Endpoint": "/v1/virtual-accounts/{vaId}", "Description": "Get VA info"}
-    ])
+        anchor("error")
+        st.header("Error Codes")
+        st.table({
+            "Code": ["VA_001", "VA_002"],
+            "Message": ["Invalid amount", "Account not found"]
+        })
 
-    st.code(json.dumps({
-        "requestId": "req-123",
-        "merchantId": "MERCHANT_001",
-        "amount": 100000,
-        "currency": "VND"
-    }, indent=2))
-
-    st.divider()
-
-    st.markdown("<div id='api'></div>", unsafe_allow_html=True)
-    st.header("API Reference")
-
-    st.subheader("Create Virtual Account")
-    st.code("POST /v1/virtual-accounts")
-
-    st.table([
-        {"Field": "merchantId", "Type": "string", "Required": "Yes"},
-        {"Field": "amount", "Type": "number", "Required": "Yes"},
-        {"Field": "currency", "Type": "string", "Required": "Yes"}
-    ])
-
-    st.divider()
-
-    st.markdown("<div id='security'></div>", unsafe_allow_html=True)
-    st.header("Security")
-
-    st.write("""
-All requests must be signed using HMAC SHA256.
-Required headers:
-- X-Request-Id
-- X-Timestamp
-- X-Client-Id
-- X-Signature
-""")
-
-    st.divider()
-
-    st.markdown("<div id='webhook'></div>", unsafe_allow_html=True)
-    st.header("Webhook")
-
-    st.code("POST https://merchant.com/webhook/va")
-
-    st.divider()
-
-    st.markdown("<div id='errors'></div>", unsafe_allow_html=True)
-    st.header("Error Codes")
-
-    st.table([
-        {"Code": "INVALID_SIGNATURE", "Message": "Signature verification failed"},
-        {"Code": "VA_NOT_FOUND", "Message": "Virtual account not found"},
-        {"Code": "EXPIRED_VA", "Message": "Virtual account expired"}
-    ])
-
-    st.success("Mock content – demo purpose only")
+        # ========== HOST TO HOST ==========
+        anchor("h2h")
+        st.subheader("Host-to-Host Integration")
+        st.write("Advanced integration with direct system connection.")
