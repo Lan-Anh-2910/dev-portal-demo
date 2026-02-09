@@ -5,7 +5,9 @@ def render_product_sidebar():
         st.markdown("## Products")
 
         with st.expander("B2B", expanded=True):
-            st.page_link("pages/b2b_va.py", label="Virtual Account")
+            if st.button("Virtual Account", use_container_width=True):
+                st.switch_page("pages/b2b_va.py")
+
             st.markdown("BNPL")
             st.markdown("Installment")
             st.markdown("Card Payment")
