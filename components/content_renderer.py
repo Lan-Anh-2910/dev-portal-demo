@@ -1,5 +1,6 @@
 import streamlit as st
 from components.section_sidebar import render_section_sidebar
+from components.section_config import SECTION_CONFIG
 
 def render_content(route):
     center, right = st.columns([4.5, 1.5])
@@ -13,11 +14,9 @@ def render_content(route):
     # ===== VA OVERVIEW PAGE =====
     elif route == "b2b_va":
         with right:
-            render_section_sidebar([
-                "Overview",
-                "Use case",
-                "Integration Methods"
-            ])
+            render_section_sidebar(
+                SECTION_CONFIG["va_overview"]
+            )
 
         with center:
             st.title("B2B / Virtual Account")
@@ -57,15 +56,9 @@ def render_content(route):
     # ===== DIRECT / BASIC =====
     elif route == "b2b_va_direct_basic":
         with right:
-            render_section_sidebar([
-                "Overview",
-                "Flow",
-                "Sandbox",
-                "API Reference",
-                "Security",
-                "Webhook",
-                "Error Codes"
-            ])
+            render_section_sidebar(
+                SECTION_CONFIG["integration_detail"]
+            )
 
         with center:
             st.markdown("B2B > VA > Direct Merchant > Basic")
@@ -105,15 +98,9 @@ def render_content(route):
     # ===== DIRECT / H2H =====
     elif route == "b2b_va_direct_h2h":
         with right:
-            render_section_sidebar([
-                "Overview",
-                "Flow",
-                "Sandbox",
-                "API Reference",
-                "Security",
-                "Webhook",
-                "Error Codes"
-            ])
+            render_section_sidebar(
+                SECTION_CONFIG["integration_detail"]
+            )
 
         with center:
             st.markdown("B2B > VA > Direct Merchant > H2H")
