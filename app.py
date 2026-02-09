@@ -58,4 +58,4 @@ with left:
         )
 
         if choice:
-            st.session_state.product_
+            st.session_state.product
