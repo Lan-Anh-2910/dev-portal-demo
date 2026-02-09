@@ -12,22 +12,16 @@ st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 st.markdown("""
 <style>
 
-/* ----- Layout helpers ----- */
-.sticky-left,
-.sticky-right {
+/* ---------- Sticky left & right ---------- */
+div[data-testid="column"]:nth-child(1),
+div[data-testid="column"]:nth-child(3) {
     position: sticky;
     top: 80px;
     height: calc(100vh - 80px);
     overflow-y: auto;
 }
 
-/* Hide scrollbar (optional) */
-.sticky-left::-webkit-scrollbar,
-.sticky-right::-webkit-scrollbar {
-    width: 0px;
-}
-
-/* ----- Navigation styles ----- */
+/* ---------- Sidebar styles ---------- */
 .nav-product {
     font-weight: 600;
     margin-top: 14px;
@@ -52,18 +46,19 @@ st.markdown("""
     font-weight: 600;
 }
 
-/* ----- Section anchor ----- */
+/* ---------- Section anchor ---------- */
 :target {
     scroll-margin-top: 90px;
 }
 
+/* Highlight section being read */
 .section-anchor:target {
     background-color: #fff3cd;
     border-left: 4px solid #f0ad4e;
     padding-left: 12px;
 }
 
-/* ----- TOC ----- */
+/* ---------- TOC ---------- */
 .toc a {
     color: #555;
     text-decoration: none;
@@ -75,7 +70,6 @@ st.markdown("""
 
 </style>
 """, unsafe_allow_html=True)
-
 
 # =========================================================
 # SECTION DEFINITIONS
@@ -150,8 +144,6 @@ left, center, right = st.columns([2, 4, 2])
 # LEFT SIDEBAR – PRODUCT ACCORDION
 # =========================================================
 with left:
-    st.markdown("<div class='sticky-left'>", unsafe_allow_html=True)
-
     st.markdown("### Overview")
 
     for product, subs in NAV.items():
@@ -172,6 +164,11 @@ with left:
 
         if st.session_state[open_key]:
             for sp in subs.keys():
+                is_active = (
+                    st.session_state.product == product
+                    and st.session_state.subproduct == sp
+                )
+
                 if st.button(
                     sp,
                     key=f"sub_{product}_{sp}",
@@ -180,9 +177,6 @@ with left:
                     st.session_state.product = product
                     st.session_state.subproduct = sp
                     st.rerun()
-
-    st.markdown("</div>", unsafe_allow_html=True)
-
 
 # =========================================================
 # RIGHT SIDEBAR – TABLE OF CONTENTS
