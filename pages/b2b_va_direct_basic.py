@@ -1,5 +1,7 @@
 import streamlit as st
 from components.section_sidebar import render_section_sidebar
+from components.breadcrumbs import render_breadcrumbs
+
 
 st.set_page_config(layout="wide")
 
@@ -19,7 +21,12 @@ with right:
 
 # CENTER CONTENT
 with center:
-    st.markdown("**B2B > VA > Direct Merchant > Basic**")
+    render_breadcrumbs([
+    {"label": "B2B", "route": "home"},
+    {"label": "VA", "route": "b2b_va"},
+    {"label": "Direct Merchant", "route": "b2b_va"},
+    {"label": "Basic", "route": "b2b_va_direct_basic"},
+])
     st.title("VA – Direct Merchant – Basic")
 
     st.info("Switch integration:")
