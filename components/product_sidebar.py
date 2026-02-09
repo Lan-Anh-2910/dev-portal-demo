@@ -6,7 +6,7 @@ def render_product_sidebar():
 
         with st.expander("B2B", expanded=True):
             if st.button("Virtual Account", use_container_width=True):
-                st.switch_page("pages/b2b_va.py")
+                st.switch_page("b2b_va.py")
 
             st.markdown("BNPL")
             st.markdown("Installment")
