@@ -1,9 +1,11 @@
 import streamlit as st
 from components.product_sidebar import render_product_sidebar
+from components.content_renderer import render_content
 
 st.set_page_config(layout="wide")
 
-render_product_sidebar()
+if "route" not in st.session_state:
+    st.session_state.route = "home"
 
-st.title("Developer Portal")
-st.write("Choose a product from the left menu")
+render_product_sidebar()
+render_content(st.session_state.route)
