@@ -96,3 +96,154 @@ with col1:
 - Service providers
 
 **Integration flow**
+Customer
+↓
+Merchant Website / App
+↓
+Payment Gateway
+↓
+Bank
+
+markdown
+Sao chép mã
+
+**Recommended integration methods**
+- 🔗 [Basic Integration](#basic-integration)
+- 🔗 [Pro Integration](#pro-integration)
+""")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# -----------------------
+# MASTER MERCHANT
+# -----------------------
+with col2:
+    st.markdown("<div class='usecase-card'>", unsafe_allow_html=True)
+    st.markdown("### Master Merchant")
+
+    st.markdown("""
+**Who is this for?**
+- Platforms or marketplaces
+- Managing **multiple sub-merchants**
+- Collecting payments on behalf of others
+
+**Typical scenarios**
+- Marketplace platforms
+- Super Apps
+- SaaS platforms with sellers
+
+**Integration flow**
+Customer
+↓
+Platform (Master Merchant)
+↓
+Payment Gateway
+↓
+Bank
+
+pgsql
+Sao chép mã
+
+**Recommended integration methods**
+- 🔗 [Pro Integration](#pro-integration)
+- 🔗 [Host to Host Integration](#host-to-host)
+""")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+st.divider()
+
+# =========================================================
+# INTEGRATE METHODS
+# =========================================================
+st.markdown("## Integrate Methods")
+
+# -----------------------
+# BASIC
+# -----------------------
+st.markdown("<div id='basic-integration' class='section-anchor'></div>", unsafe_allow_html=True)
+st.markdown("### Basic Integration")
+
+st.markdown("""
+<div class="integration-box">
+
+**Best for**
+- Direct Merchant
+- MVP or quick launch
+
+**Characteristics**
+- Redirect or SDK-based
+- Minimal API implementation
+- Fast time to market
+
+**Limitations**
+- Limited UI customization
+- Dependent on payment gateway UI
+
+</div>
+""", unsafe_allow_html=True)
+
+# -----------------------
+# PRO
+# -----------------------
+st.markdown("<div id='pro-integration' class='section-anchor'></div>", unsafe_allow_html=True)
+st.markdown("### Pro Integration")
+
+st.markdown("""
+<div class="integration-box">
+
+**Best for**
+- Direct Merchant (advanced)
+- Master Merchant
+
+**Characteristics**
+- Full API integration
+- Custom checkout experience
+- Better control over payment flow
+
+**Requirements**
+- Backend integration
+- Webhook handling
+
+</div>
+""", unsafe_allow_html=True)
+
+# -----------------------
+# HOST TO HOST
+# -----------------------
+st.markdown("<div id='host-to-host' class='section-anchor'></div>", unsafe_allow_html=True)
+st.markdown("### Host to Host Integration")
+
+st.markdown("""
+<div class="integration-box">
+
+**Best for**
+- Master Merchant
+- Enterprise platforms
+
+**Characteristics**
+- Server-to-server communication
+- No redirect
+- Highest security level
+
+**Requirements**
+- IP whitelisting
+- Security review
+- Technical onboarding process
+
+</div>
+""", unsafe_allow_html=True)
+
+st.divider()
+
+# =========================================================
+# NEXT STEPS
+# =========================================================
+st.markdown("## Next steps")
+
+st.markdown("""
+1. Identify your **Use case**
+2. Select the appropriate **Integration Method**
+3. Proceed to **Sandbox** for testing
+4. Review **API Reference** for implementation details
+""")
+
+st.success("All content shown is mock data for demo purposes only.")
