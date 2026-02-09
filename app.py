@@ -1,16 +1,33 @@
 import streamlit as st
 import pandas as pd
 
+# =========================================================
+# PAGE CONFIG
+# =========================================================
 st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 
-# ---------- CSS ----------
+# =========================================================
+# GLOBAL CSS
+# =========================================================
 st.markdown("""
 <style>
+
+/* ---------- Sticky left & right ---------- */
+div[data-testid="column"]:nth-child(1),
+div[data-testid="column"]:nth-child(3) {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+/* ---------- Sidebar styles ---------- */
 .nav-product {
     font-weight: 600;
-    margin-top: 12px;
+    margin-top: 14px;
     color: #333;
 }
+
 .nav-sub {
     padding: 6px 10px;
     margin-left: 22px;
@@ -18,36 +35,66 @@ st.markdown("""
     cursor: pointer;
     color: #555;
 }
+
 .nav-sub:hover {
     background-color: #f5f5f5;
 }
+
 .nav-sub.active {
     background-color: #fde7f3;
     color: #d63384;
     font-weight: 600;
 }
-.toggle {
-    cursor: pointer;
-    color: #888;
-    margin-right: 6px;
+
+/* ---------- Section anchor ---------- */
+:target {
+    scroll-margin-top: 90px;
 }
+
+/* Highlight section being read */
+.section-anchor:target {
+    background-color: #fff3cd;
+    border-left: 4px solid #f0ad4e;
+    padding-left: 12px;
+}
+
+/* ---------- TOC ---------- */
+.toc a {
+    color: #555;
+    text-decoration: none;
+}
+
+.toc a:hover {
+    text-decoration: underline;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- SECTION TEMPLATES ----------
+# =========================================================
+# SECTION DEFINITIONS
+# =========================================================
 B2B_SECTIONS = [
-    "Overview", "Use case", "Integrate Methods",
-    "Sandbox", "API Reference", "Security",
-    "Webhook", "Error Codes"
+    "Overview",
+    "Use case",
+    "Integrate Methods",
+    "Sandbox",
+    "API Reference",
+    "Security",
+    "Webhook",
+    "Error Codes"
 ]
 
 CROSS_BORDER_SECTIONS = [
-    "Overview", "Flow", "Sandbox",
-    "API Reference", "Security",
-    "Webhook", "Error Codes"
+    "Overview",
+    "Flow",
+    "Sandbox",
+    "API Reference",
+    "Security",
+    "Webhook",
+    "Error Codes"
 ]
 
-# ---------- NAV ----------
 NAV = {
     "B2B": {
         "VA": B2B_SECTIONS,
@@ -74,24 +121,28 @@ NAV = {
     }
 }
 
-# ---------- SESSION STATE ----------
+# =========================================================
+# SESSION STATE
+# =========================================================
 if "product" not in st.session_state:
     st.session_state.product = "B2B"
 if "subproduct" not in st.session_state:
     st.session_state.subproduct = "VA"
-if "section" not in st.session_state:
-    st.session_state.section = "Overview"
 
-# product open state
+# product accordion state
 for product in NAV.keys():
     key = f"open_{product}"
     if key not in st.session_state:
         st.session_state[key] = False
 
-# ---------- LAYOUT ----------
+# =========================================================
+# LAYOUT
+# =========================================================
 left, center, right = st.columns([2, 4, 2])
 
-# ---------- LEFT: PRODUCT COLLAPSE ----------
+# =========================================================
+# LEFT SIDEBAR – PRODUCT ACCORDION
+# =========================================================
 with left:
     st.markdown("### Overview")
 
@@ -111,15 +162,12 @@ with left:
                 unsafe_allow_html=True
             )
 
-        # show subproducts ONLY when open
         if st.session_state[open_key]:
             for sp in subs.keys():
                 is_active = (
                     st.session_state.product == product
                     and st.session_state.subproduct == sp
                 )
-
-                css = "nav-sub active" if is_active else "nav-sub"
 
                 if st.button(
                     sp,
@@ -128,20 +176,24 @@ with left:
                 ):
                     st.session_state.product = product
                     st.session_state.subproduct = sp
-                    st.session_state.section = NAV[product][sp][0]
                     st.rerun()
 
-# ---------- RIGHT: SECTIONS ----------
+# =========================================================
+# RIGHT SIDEBAR – TABLE OF CONTENTS
+# =========================================================
 with right:
     st.markdown("### Sections")
+    st.markdown("<div class='toc'>", unsafe_allow_html=True)
 
-    sections = NAV[st.session_state.product][st.session_state.subproduct]
-
-    for sec in sections:
+    for sec in NAV[st.session_state.product][st.session_state.subproduct]:
         anchor = sec.lower().replace(" ", "-")
         st.markdown(f"- [{sec}](#{anchor})")
 
-# ---------- CENTER: FAKE CONTENT ----------
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# =========================================================
+# CENTER – FULL CONTENT WITH ANCHORS
+# =========================================================
 with center:
     st.markdown(
         f"##### {st.session_state.product} / {st.session_state.subproduct}"
@@ -152,29 +204,29 @@ with center:
     for sec in sections:
         anchor = sec.lower().replace(" ", "-")
 
-        # Anchor
-        st.markdown(f"<div id='{anchor}'></div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div id='{anchor}' class='section-anchor'></div>",
+            unsafe_allow_html=True
+        )
 
-        # Title
         st.markdown(f"## {sec}")
         st.divider()
 
-        # -------- FAKE CONTENT --------
+        # ---------- FAKE CONTENT ----------
         st.markdown(f"""
 **Description**  
 This is mock content for **{sec}** under **{st.session_state.subproduct}**.
 
-**What you can do**
-- Understand feature behavior
-- Review integration approach
-- Explore API structure
-- Test in sandbox environment
+**What this section covers**
+- Feature explanation
+- Integration approach
+- Constraints & notes
+- Demo-only fake information
 
 **Notes**
-All information here is fake and for demo purposes only.
+All content shown here is for demonstration purposes only.
 """)
 
-        # API Reference mock
         if sec == "API Reference":
             st.subheader("POST /api/v1/demo")
 
@@ -197,3 +249,19 @@ Content-Type: application/json
                 "transaction_id": "TXN_456"
             })
 
+        if sec == "Error Codes":
+            st.table(pd.DataFrame({
+                "Code": ["400", "401", "403", "500"],
+                "Message": [
+                    "Bad Request",
+                    "Unauthorized",
+                    "Forbidden",
+                    "Internal Server Error"
+                ],
+                "Description": [
+                    "Invalid input parameters",
+                    "Missing or invalid API key",
+                    "Access denied",
+                    "Unexpected system error"
+                ]
+            }))
