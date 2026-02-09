@@ -1,115 +1,101 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(
-    page_title="Dev Portal",
-    layout="wide"
-)
+st.set_page_config(page_title="Dev Portal Demo", layout="wide")
 
-# ---------- SIDEBAR (LEFT) ----------
-st.sidebar.title("📘 Dev Portal")
-
-product = st.sidebar.selectbox(
-    "Product",
-    ["Cross-border", "B2B", "Bill", "Leadgen"]
-)
-
-module_map = {
-    "Cross-border": ["Collection", "Disbursement"],
-    "B2B": ["VA", "BNPL", "Installment", "Card Payment"],
-    "Bill": ["Bill Payment", "Insurance"],
-    "Leadgen": ["Overview"]
+# ---------- DATA ----------
+PRODUCTS = {
+    "Cross-border": [
+        "Overview", "Flow", "Sandbox",
+        "API Reference", "Webhook", "Security", "Error Codes"
+    ],
+    "B2B": [
+        "Overview", "Use case", "Integrate Methods",
+        "Sandbox", "API Reference", "Webhook", "Error Codes"
+    ],
+    "Bill": [
+        "Overview", "API Reference"
+    ],
+    "Leadgen": [
+        "Overview"
+    ]
 }
 
-module = st.sidebar.selectbox(
-    "Module",
-    module_map[product]
-)
+# ---------- SESSION STATE ----------
+if "product" not in st.session_state:
+    st.session_state.product = "Cross-border"
 
-# ---------- MAIN HEADER ----------
-st.markdown(f"### {product}")
-st.title(module)
+if "section" not in st.session_state:
+    st.session_state.section = "Overview"
 
-st.divider()
+# ---------- LAYOUT ----------
+left, center, right = st.columns([1.2, 3.6, 1.6])
 
-# ---------- SUB TABS (RIGHT / TOP) ----------
-tabs = st.tabs([
-    "Overview",
-    "Flow",
-    "Sandbox",
-    "API Reference",
-    "Webhook",
-    "Security",
-    "Error Codes"
-])
+# ---------- LEFT: PRODUCTS ----------
+with left:
+    st.markdown("### Products")
+    for p in PRODUCTS.keys():
+        if st.button(
+            p,
+            use_container_width=True,
+            type="primary" if st.session_state.product == p else "secondary"
+        ):
+            st.session_state.product = p
+            st.session_state.section = PRODUCTS[p][0]
 
-# ---------- TAB CONTENT ----------
-with tabs[0]:
-    st.subheader("Overview")
-    st.markdown("""
-    Đây là phần mô tả tổng quan module.
+# ---------- RIGHT: SUBNAMES ----------
+with right:
+    st.markdown("### Sections")
+    for s in PRODUCTS[st.session_state.product]:
+        if st.button(
+            s,
+            use_container_width=True,
+            type="primary" if st.session_state.section == s else "secondary"
+        ):
+            st.session_state.section = s
 
-    Nội dung demo – sẽ cập nhật sau.
-    """)
+# ---------- CENTER: CONTENT ----------
+with center:
+    st.markdown(f"##### {st.session_state.product}")
+    st.title(st.session_state.section)
+    st.divider()
 
-with tabs[1]:
-    st.subheader("Flow")
-    st.info("Flow diagram sẽ được thêm sau.")
+    # ---- CONTENT TEMPLATE ----
+    if st.session_state.section == "Overview":
+        st.markdown("""
+        Đây là **Overview** của product.
 
-with tabs[2]:
-    st.subheader("Sandbox")
-    st.markdown("""
-    Base URL (Sandbox):
+        Nội dung demo, mô tả tổng quan, phạm vi sử dụng,
+        và các thông tin cần biết trước khi tích hợp.
+        """)
 
-    ```
-    https://sandbox.api.company.com
-    ```
-    """)
+    elif st.session_state.section == "API Reference":
+        st.subheader("POST /api/v1/example")
 
-with tabs[3]:
-    st.subheader("POST /api/v1/example")
+        st.markdown("**Description**")
+        st.write("API endpoint dùng cho demo Dev Portal.")
 
-    st.markdown("**Description**")
-    st.write("API dùng cho mục đích demo.")
-
-    st.markdown("**Headers**")
-    st.code("""
+        st.markdown("**Headers**")
+        st.code("""
 Authorization: Bearer {API_KEY}
 Content-Type: application/json
 """)
 
-    st.markdown("**Request Parameters**")
-    df = pd.DataFrame({
-        "Field": ["amount", "currency"],
-        "Type": ["number", "string"],
-        "Required": ["Yes", "Yes"],
-        "Description": ["Transaction amount", "Currency code"]
-    })
-    st.table(df)
+        st.markdown("**Request Parameters**")
+        df = pd.DataFrame({
+            "Field": ["amount", "currency"],
+            "Type": ["number", "string"],
+            "Required": ["Yes", "Yes"]
+        })
+        st.table(df)
 
-    st.markdown("**Example Response**")
-    st.json({
-        "status": "success",
-        "data": {
-            "transaction_id": "abc123"
-        }
-    })
+        st.markdown("**Example Response**")
+        st.json({
+            "status": "success",
+            "data": {
+                "transaction_id": "demo_123"
+            }
+        })
 
-with tabs[4]:
-    st.subheader("Webhook")
-    st.info("Webhook documentation placeholder.")
-
-with tabs[5]:
-    st.subheader("Security")
-    st.markdown("Authentication, signature, IP whitelist...")
-
-with tabs[6]:
-    st.subheader("Error Codes")
-    st.table(pd.DataFrame({
-        "Code": ["400", "401", "500"],
-        "Description": [
-            "Bad Request",
-            "Unauthorized",
-            "Internal Server Error"
-        ]
-    }))
+    else:
+        st.info("Nội dung đang được cập nhật.")
