@@ -134,55 +134,66 @@ with left:
 # ---------- RIGHT: SECTIONS ----------
 with right:
     st.markdown("### Sections")
-    for sec in NAV[st.session_state.product][st.session_state.subproduct]:
-        if st.button(sec, key=f"sec_{sec}", use_container_width=True):
-            st.session_state.section = sec
-            st.rerun()
+
+    sections = NAV[st.session_state.product][st.session_state.subproduct]
+
+    for sec in sections:
+        anchor = sec.lower().replace(" ", "-")
+        st.markdown(f"- [{sec}](#{anchor})")
 
 # ---------- CENTER: FAKE CONTENT ----------
 with center:
     st.markdown(
         f"##### {st.session_state.product} / {st.session_state.subproduct}"
     )
-    st.title(st.session_state.section)
-    st.divider()
 
-    st.markdown(f"""
-### {st.session_state.section}
+    sections = NAV[st.session_state.product][st.session_state.subproduct]
 
-This is **mock content** for demo purposes.
+    for sec in sections:
+        anchor = sec.lower().replace(" ", "-")
 
-**Description**
-This section explains the `{st.session_state.subproduct}` feature
-under `{st.session_state.product}`.
+        # Anchor
+        st.markdown(f"<div id='{anchor}'></div>", unsafe_allow_html=True)
 
-**Highlights**
-- Simple API design
-- Secure authentication
-- Sandbox & production support
-- Webhook integration available
+        # Title
+        st.markdown(f"## {sec}")
+        st.divider()
 
-> All information shown here is fake and for UI demonstration only.
+        # -------- FAKE CONTENT --------
+        st.markdown(f"""
+**Description**  
+This is mock content for **{sec}** under **{st.session_state.subproduct}**.
+
+**What you can do**
+- Understand feature behavior
+- Review integration approach
+- Explore API structure
+- Test in sandbox environment
+
+**Notes**
+All information here is fake and for demo purposes only.
 """)
 
-    if st.session_state.section == "API Reference":
-        st.subheader("POST /api/v1/demo")
+        # API Reference mock
+        if sec == "API Reference":
+            st.subheader("POST /api/v1/demo")
 
-        st.markdown("**Headers**")
-        st.code("""
+            st.markdown("**Headers**")
+            st.code("""
 Authorization: Bearer {API_KEY}
 Content-Type: application/json
 """)
 
-        st.markdown("**Request Body**")
-        st.json({
-            "amount": 100000,
-            "currency": "VND",
-            "order_id": "ORDER_123"
-        })
+            st.markdown("**Request Body**")
+            st.json({
+                "amount": 100000,
+                "currency": "VND",
+                "order_id": "ORDER_123"
+            })
 
-        st.markdown("**Response Example**")
-        st.json({
-            "status": "success",
-            "transaction_id": "TXN_456"
-        })
+            st.markdown("**Response Example**")
+            st.json({
+                "status": "success",
+                "transaction_id": "TXN_456"
+            })
+
